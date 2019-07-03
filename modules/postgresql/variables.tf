@@ -242,3 +242,15 @@ variable "additional_users" {
   description = "A list of users to be created in your cluster"
   default     = []
 }
+
+variable "ipv4_enabled" {
+  description = "(Optional) Whether this Cloud SQL instance should be assigned a public IPV4 address. Either ipv4_enabled must be enabled or a private_network must be configured."
+  default     = false
+}
+variable "peer_vpc_network" {
+  description = "(Optional) The Peer VPC network."
+}
+variable "require_ssl" {
+  description = "(Optional) True if mysqld should default to REQUIRE X509 for users connecting over IP."
+  default     = false
+}

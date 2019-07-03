@@ -39,3 +39,8 @@ output generated_user_password {
   value       = "${random_id.user-password.hex}"
   sensitive   = true
 }
+   
+output "instance_service_account_email_address" {
+  value       = "${google_sql_database_instance.default.service_account_email_address}"
+  description = "The service account email address assigned to the master instance"
+}   

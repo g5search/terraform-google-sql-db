@@ -43,8 +43,12 @@ resource "google_sql_database_instance" "replicas" {
     activation_policy           = "${var.read_replica_activation_policy}"
     authorized_gae_applications = ["${var.authorized_gae_applications}"]
     availability_type           = "${var.read_replica_availability_type}"
-    ip_configuration            = "${local.ip_configurations["${local.ip_configuration_enabled ? "enabled" : "disabled"}"]}"
-
+//    ip_configuration            = "${local.ip_configurations["${local.ip_configuration_enabled ? "enabled" : "disabled"}"]}"
+    ip_configuration {
+      ipv4_enabled    = "${var.ipv4_enabled}"
+      private_network = "${var.peer_vpc_network}" 
+      require_ssl     = "${var.require_ssl}"
+    }
     crash_safe_replication = "${var.read_replica_crash_safe_replication}"
     disk_autoresize        = "${var.read_replica_disk_autoresize}"
     disk_size              = "${var.read_replica_disk_size}"

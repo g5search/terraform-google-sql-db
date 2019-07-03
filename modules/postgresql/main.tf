@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
 locals {
   ip_configuration_enabled = "${length(keys(var.ip_configuration)) > 0 ? true : false}"
 
@@ -22,7 +22,26 @@ locals {
     disabled = "${list()}"
   }
 }
+*/
+##########################################################################################
+resource "google_compute_global_address" "private_ip_address" {
+    provider      = "google-beta"
+    name          = "private-ip-address"
+    purpose       = "VPC_PEERING"
+    address_type  = "INTERNAL"
+    prefix_length = 16
+    network       = "${var.peer_vpc_network}"
+    project       = "${var.project_id}" 
+}
 
+resource "google_service_networking_connection" "private_vpc_connection" {
+    provider      = "google-beta"
+    network       = "${var.peer_vpc_network}"
+    service       = "servicenetworking.googleapis.com"
+    reserved_peering_ranges = ["${google_compute_global_address.private_ip_address.name}"]
+}
+
+##########################################################################################
 resource "google_sql_database_instance" "default" {
   project          = "${var.project_id}"
   name             = "${var.name}"
@@ -35,8 +54,12 @@ resource "google_sql_database_instance" "default" {
     availability_type           = "${var.availability_type}"
     authorized_gae_applications = ["${var.authorized_gae_applications}"]
     backup_configuration        = ["${var.backup_configuration}"]
-    ip_configuration            = "${local.ip_configurations["${local.ip_configuration_enabled ? "enabled" : "disabled"}"]}"
-
+//    ip_configuration            = "${local.ip_configurations["${local.ip_configuration_enabled ? "enabled" : "disabled"}"]}"
+    ip_configuration {
+      ipv4_enabled    = "${var.ipv4_enabled}"
+      private_network = "${var.peer_vpc_network}" 
+      require_ssl     = "${var.require_ssl}"
+    }
     disk_autoresize = "${var.disk_autoresize}"
     disk_size       = "${var.disk_size}"
     disk_type       = "${var.disk_type}"
@@ -58,6 +81,7 @@ resource "google_sql_database_instance" "default" {
   lifecycle {
     ignore_changes = ["disk_size"]
   }
+  depends_on = ["google_service_networking_connection.private_vpc_connection"]
 }
 
 resource "google_sql_database" "default" {
