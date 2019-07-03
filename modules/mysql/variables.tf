@@ -111,10 +111,7 @@ EOF
 
 variable "ip_configuration" {
   description = "The ip configuration for the master instance."
-
-  default = {
-    ipv4_enabled = "true"
-  }
+  default     = {}
 }
 
 // Read Replicas
@@ -329,19 +326,4 @@ variable "user_password" {
 variable "additional_users" {
   description = "A list of users to be created in your cluster"
   default     = []
-}
-
-variable create_timeout {
-  description = "The optional timout that is applied to limit long database creates."
-  default     = "10m"
-}
-
-variable update_timeout {
-  description = "The optional timout that is applied to limit long database updates."
-  default     = "10m"
-}
-
-variable delete_timeout {
-  description = "The optional timout that is applied to limit long database deletes."
-  default     = "10m"
 }

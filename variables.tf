@@ -143,8 +143,3 @@ variable replica_configuration {
   type        = "list"
   default     = []
 }
-
-variable availability_type {
-  description = "This specifies whether a PostgreSQL instance should be set up for high availability (REGIONAL) or single zone (ZONAL)."
-  default     = "ZONAL"
-}

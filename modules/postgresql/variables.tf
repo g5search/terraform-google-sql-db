@@ -42,11 +42,6 @@ variable "zone" {
   description = "The zone for the master instance, it should be something like: `a`, `c`."
 }
 
-variable "peering_completed" {
-  description = "Optional. This is used to ensure that resources are created in the proper order when using private IPs and service network peering."
-  default     = ""
-}
-
 variable "activation_policy" {
   description = "The activation policy for the master instance.Can be either `ALWAYS`, `NEVER` or `ON_DEMAND`."
   default     = "ALWAYS"
@@ -120,10 +115,7 @@ variable "authorized_gae_applications" {
 
 variable "ip_configuration" {
   description = "The ip configuration for the master instances."
-
-  default = {
-    ipv4_enabled = "true"
-  }
+  default     = {}
 }
 
 variable "read_replica_size" {
@@ -249,19 +241,4 @@ variable "user_password" {
 variable "additional_users" {
   description = "A list of users to be created in your cluster"
   default     = []
-}
-
-variable create_timeout {
-  description = "The optional timout that is applied to limit long database creates."
-  default     = "10m"
-}
-
-variable update_timeout {
-  description = "The optional timout that is applied to limit long database updates."
-  default     = "10m"
-}
-
-variable delete_timeout {
-  description = "The optional timout that is applied to limit long database deletes."
-  default     = "10m"
 }
