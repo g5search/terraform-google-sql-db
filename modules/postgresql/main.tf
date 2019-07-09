@@ -21,6 +21,8 @@ locals {
     enabled  = "${var.ip_configuration}"
     disabled = "${map()}"
   }
+
+  tf_dependency_labels = "${var.peering_completed ? map("tf_dependency", var.peering_completed) : map()}"
 }
 
 resource "google_sql_database_instance" "default" {
@@ -46,7 +48,7 @@ resource "google_sql_database_instance" "default" {
     // Define a label to force a dependency to the creation of the network peering.
     // Substitute this with a module dependency once the module is migrated to
     // Terraform 0.12
-    user_labels = "${var.peering_completed ? merge(map("tf_dependency", var.peering_completed), var.user_labels) : var.user_labels}"
+    user_labels = "${merge(tf_dependency_labels, var.user_labels)}"
 
     location_preference {
       zone = "${var.region}-${var.zone}"
